@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    tools:context=".ProfileActivity">
+
+    <TextView
+        android:id="@+id/profile_display_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="259dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="5dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="5dp"
+        android:text="Display Name"
+        android:textColor="@android:color/white"
+        android:textSize="24dp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/profile_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/photo" />
+
+    <TextView
+        android:id="@+id/profile_display_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/profile_total_friends"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginBottom="232dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="5dp"
+        android:text="Your status"
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/profile_total_friends"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="143dp"
+        android:text="Total Friends"
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/profile_request_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/profile_total_friends"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="-19dp"
+        android:layout_marginBottom="90dp"
+        android:background="@color/colorAccent"
+        android:text="SEND FRIEND REQUEST" />
+
+    <Button
+        android:id="@+id/profile_decline_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/profile_total_friends"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="-37dp"
+        android:layout_marginBottom="30dp"
+        android:background="@color/colorAccent"
+        android:text="DECLINE FRIEND REQUEST" />
+</RelativeLayout>

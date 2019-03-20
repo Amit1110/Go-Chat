@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Hey!!</string>
+    <string name="register_for_new_account">Need New Account?</string>
+    <string name="enter_display_name">Enter Display Name</string>
+    <string name="enter_email">Enter Email</string>
+    <string name="create_account">Create Account</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="main_Activity_Action_Bar">Chat View</string>
+    <string name="logut">Logut</string>
+    <string name="create_a_new_account">Create a New Account</string>
+    <string name="reg_toolbar_title">Create Account</string>
+    <string name="welcome_activity_text">This is welcome activity</string>
+    <string name="login_to_your_account">Login to your account</string>
+    <string name="login">Login</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="settings_display_name">DISPLAY NAME</string>
+    <string name="settings_display_status">Hi! there I am using Hey Chat</string>
+    <string name="settings_change_status">change status</string>
+    <string name="settings_change_image">Change Image</string>
+    <string name="status_change_status">Enter your new status</string>
+</resources>
