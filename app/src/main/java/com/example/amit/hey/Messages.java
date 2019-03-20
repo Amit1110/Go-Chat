@@ -3,18 +3,27 @@ package com.example.amit.hey;
 import android.os.Message;
 
 public class Messages {
-    private String message, type;
+
+    private String message, type, from;
     long time;
     boolean seen;
 
 
-    public Messages(String message, boolean seen, long time, String  type) {
+    public Messages(String message, boolean seen, long time, String  type, String from) {
         this.message = message;
         this.seen = seen;
         this.time = time;
         this.type = type;
+        this.from = from;
     }
 
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
+    }
     public String getMessage() {
         return message;
     }

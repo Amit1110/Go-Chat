@@ -229,10 +229,13 @@ public class ChatActivity extends AppCompatActivity {
             messageMap.put("seen",false);
             messageMap.put("type","text");
             messageMap.put("time", ServerValue.TIMESTAMP);
+            messageMap.put("from", currentUserId);
 
             Map messageUserMap = new HashMap();
             messageUserMap.put(currentUserRef + "/" + pushId, messageMap);
             messageUserMap.put(chatUserRef + "/" + pushId, messageMap);
+
+            chatMessageInput.setText("");
 
             rootReference.updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
                 @Override

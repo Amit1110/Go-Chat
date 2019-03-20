@@ -4,9 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#dddddd"
     tools:context=".ChatActivity">
 
-    <include layout="@layout/app_bar_layout" android:id="@+id/chat_app_bar"/>
+    <include
+        android:id="@+id/chat_app_bar"
+        layout="@layout/app_bar_layout" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/messages_list"
@@ -38,9 +41,9 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="8"
+            android:hint="Enter Message..."
             android:paddingLeft="10dp"
             android:paddingTop="15dp"
-            android:hint="Enter Message..."
             android:textAlignment="textStart" />
 
         <ImageView
