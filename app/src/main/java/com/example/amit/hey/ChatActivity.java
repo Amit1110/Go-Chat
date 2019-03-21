@@ -64,6 +64,10 @@ public class ChatActivity extends AppCompatActivity {
     private static final  int TOTAL_ITEMS_TO_LOAD = 10;
     private int currentPageNumber = 1;
 
+    //Refesh Solution
+    private int itemPosition = 0;
+    private String lastKey= "";
+
 
 
     @Override
@@ -186,12 +190,60 @@ public class ChatActivity extends AppCompatActivity {
             public void onRefresh() {
                 currentPageNumber++;
 
-                mMessagesList.clear();
+                itemPosition = 0;
 
-                loadMessages();
+                loadMoreMessages();
             }
         });
 
+
+    }
+
+    private void loadMoreMessages(){
+        DatabaseReference messageRef = rootReference.child("messages").child(currentUserId).child(mChatUser);
+
+        Query messageQuery = messageRef.orderByKey().endAt(lastKey).limitToLast(10);
+
+        messageQuery.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Messages messagesRetrievd = dataSnapshot.getValue(Messages.class);
+
+                mMessagesList.add(itemPosition++,messagesRetrievd);
+                if(itemPosition ==1){
+
+                    String messageKey = dataSnapshot.getKey();
+                    lastKey = messageKey;
+
+                }
+                messageAdapter.notifyDataSetChanged();
+
+                mRefreshLatout.setRefreshing(false);
+
+                linearLayoutManager.scrollToPositionWithOffset(10,0);
+
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
     }
 
@@ -207,6 +259,15 @@ public class ChatActivity extends AppCompatActivity {
                 Messages messagesRetrievd = dataSnapshot.getValue(Messages.class);
 
                 mMessagesList.add(messagesRetrievd);
+                itemPosition++;
+
+                if(itemPosition ==1){
+
+                    String messageKey = dataSnapshot.getKey();
+                    lastKey = messageKey;
+
+                }
+
                 messageAdapter.notifyDataSetChanged();
                 messagesList.scrollToPosition(mMessagesList.size() - 1);
 
