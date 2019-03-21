@@ -67,6 +67,7 @@ public class ChatActivity extends AppCompatActivity {
     //Refesh Solution
     private int itemPosition = 0;
     private String lastKey= "";
+    private String prevKey = "";
 
 
 
@@ -209,13 +210,27 @@ public class ChatActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Messages messagesRetrievd = dataSnapshot.getValue(Messages.class);
 
-                mMessagesList.add(itemPosition++,messagesRetrievd);
+                String messageKey = dataSnapshot.getKey();
+
+
+                if(!prevKey.equals(messageKey)){
+                    mMessagesList.add(itemPosition++,messagesRetrievd);
+                }else {
+                    prevKey = lastKey;
+                }
+
+
                 if(itemPosition ==1){
 
-                    String messageKey = dataSnapshot.getKey();
+
                     lastKey = messageKey;
 
                 }
+
+
+
+                Log.i("Amit", "Last Key:  " + lastKey + "Prev Key:  " + prevKey + "Message Key  " + messageKey);
+
                 messageAdapter.notifyDataSetChanged();
 
                 mRefreshLatout.setRefreshing(false);
@@ -265,6 +280,7 @@ public class ChatActivity extends AppCompatActivity {
 
                     String messageKey = dataSnapshot.getKey();
                     lastKey = messageKey;
+                    prevKey = messageKey;
 
                 }
 
