@@ -12,16 +12,33 @@
         android:src="@drawable/photo" />
 
     <TextView
+        android:id="@+id/name_text_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/time_text_layout"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="70dp"
+        android:layout_marginTop="-7dp"
+        android:text="Display Name" />
+
+    <TextView
         android:id="@+id/message_text_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="84dp"
-        android:layout_marginTop="0dp"
-        android:background="@drawable/message_text_background"
-        android:padding="15dp"
-        android:text="TextView"
-        android:textColor="@android:color/white" />
+        android:layout_alignEnd="@+id/name_text_layout"
+        android:layout_alignBottom="@+id/message_image_layout"
+        android:layout_marginEnd="3dp"
+        android:layout_marginBottom="6dp"
+        android:text="Message Text" />
+
+    <TextView
+        android:id="@+id/time_text_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/message_text_layout"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="162dp"
+        android:layout_marginBottom="4dp"
+        android:text="00:00" />
 
 </RelativeLayout>

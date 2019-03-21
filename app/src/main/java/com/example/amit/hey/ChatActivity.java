@@ -3,6 +3,7 @@ package com.example.amit.hey;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
@@ -53,10 +55,14 @@ public class ChatActivity extends AppCompatActivity {
     private EditText chatMessageInput;
 
     private RecyclerView messagesList;
+    private SwipeRefreshLayout mRefreshLatout;
 
     private final List<Messages> mMessagesList = new ArrayList<>();
     private LinearLayoutManager linearLayoutManager;
     private MessageAdapter messageAdapter;
+
+    private static final  int TOTAL_ITEMS_TO_LOAD = 10;
+    private int currentPageNumber = 1;
 
 
 
@@ -92,6 +98,7 @@ public class ChatActivity extends AppCompatActivity {
         chatSendView = findViewById(R.id.chat_page_send_button);
         chatMessageInput = findViewById(R.id.chat_page_message_view);
         messagesList = findViewById(R.id.messages_list);
+        mRefreshLatout = findViewById(R.id.swipeRefreshLayout);
 
         messageAdapter = new MessageAdapter(mMessagesList);
 
@@ -174,17 +181,37 @@ public class ChatActivity extends AppCompatActivity {
 
         });
 
+        mRefreshLatout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                currentPageNumber++;
+
+                mMessagesList.clear();
+
+                loadMessages();
+            }
+        });
+
 
     }
 
     private void loadMessages(){
-        rootReference.child("messages").child(currentUserId).child(mChatUser).addChildEventListener(new ChildEventListener() {
+
+        DatabaseReference messageRef = rootReference.child("messages").child(currentUserId).child(mChatUser);
+
+        Query messageQuery = messageRef.limitToLast(currentPageNumber*TOTAL_ITEMS_TO_LOAD);
+
+        messageQuery.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Messages messagesRetrievd = dataSnapshot.getValue(Messages.class);
 
                 mMessagesList.add(messagesRetrievd);
                 messageAdapter.notifyDataSetChanged();
+                messagesList.scrollToPosition(mMessagesList.size() - 1);
+
+                mRefreshLatout.setRefreshing(false);
+
 
             }
 
