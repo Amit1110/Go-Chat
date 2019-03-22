@@ -1,5 +1,7 @@
 package com.example.amit.hey;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,6 +20,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toolbar;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -28,6 +33,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,6 +62,7 @@ public class ChatActivity extends AppCompatActivity {
     private ImageView chatSendView;
     private EditText chatMessageInput;
 
+
     private RecyclerView messagesList;
     private SwipeRefreshLayout mRefreshLatout;
 
@@ -63,6 +72,9 @@ public class ChatActivity extends AppCompatActivity {
 
     private static final  int TOTAL_ITEMS_TO_LOAD = 10;
     private int currentPageNumber = 1;
+
+    private static final int GALLERY_PICK = 1;
+    private StorageReference imageReference;
 
     //Refesh Solution
     private int itemPosition = 0;
@@ -87,6 +99,7 @@ public class ChatActivity extends AppCompatActivity {
         rootReference = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
         currentUserId = mAuth.getCurrentUser().getUid();
+        imageReference = FirebaseStorage.getInstance().getReference();
 
         mChatUser = getIntent().getStringExtra("userId");
 
@@ -186,6 +199,18 @@ public class ChatActivity extends AppCompatActivity {
 
         });
 
+        chatAddView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent galleryIntent = new Intent();
+                galleryIntent.setType("image/*");
+                galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+
+                startActivityForResult(Intent.createChooser(galleryIntent, "SELECT Image"), GALLERY_PICK);
+
+            }
+        });
+
         mRefreshLatout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -198,6 +223,71 @@ public class ChatActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == GALLERY_PICK && resultCode == RESULT_OK){
+            Uri imageUri = data.getData();
+            Log.i("Amit", imageUri.toString());
+
+            final String currentUserRef = "messages/" + currentUserId + "/" + mChatUser;
+            final String chatUserRef = "messages/" + mChatUser + "/" + currentUserId;
+
+            DatabaseReference user_message_push = rootReference.child("messages").child(currentUserId).child(mChatUser).push();
+
+            final String pushId = user_message_push.getKey();
+
+            final StorageReference filePath = imageReference.child("message_images").child(pushId + ".jpg");
+
+
+            filePath.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                    filePath.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+
+                            String download_uri = task.getResult().toString();
+
+                            Map messageMap = new HashMap();
+                            messageMap.put("message", download_uri);
+                            messageMap.put("seen", false);
+                            messageMap.put("type", "image");
+                            messageMap.put("time", ServerValue.TIMESTAMP);
+                            messageMap.put("from", currentUserId);
+
+
+                            Map messageUserMap = new HashMap();
+                            messageUserMap.put(currentUserRef + "/" + pushId, messageMap);
+                            messageUserMap.put(chatUserRef + "/" + pushId, messageMap);
+                            chatMessageInput.setText("");
+
+                            rootReference.updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
+                                @Override
+                                public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+
+                                    if(databaseError!=null){
+                                        Log.i("Amit", databaseError.getMessage());
+                                    }
+
+                                }
+                            });
+
+                        }
+                    });
+
+
+                }
+            });
+
+
+
+
+        }
     }
 
     private void loadMoreMessages(){
@@ -229,7 +319,7 @@ public class ChatActivity extends AppCompatActivity {
 
 
 
-                Log.i("Amit", "Last Key:  " + lastKey + "Prev Key:  " + prevKey + "Message Key  " + messageKey);
+                //Log.i("Amit", "Last Key:  " + lastKey + "Prev Key:  " + prevKey + "Message Key  " + messageKey);
 
                 messageAdapter.notifyDataSetChanged();
 

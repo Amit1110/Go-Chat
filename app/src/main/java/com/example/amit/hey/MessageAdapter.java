@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -14,6 +15,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
@@ -47,6 +49,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         public CircleImageView profileImage;
         public TextView messageName;
         public TextView messageTime;
+        public ImageView messageImage;
 
 
 
@@ -57,7 +60,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             profileImage = (CircleImageView) itemView.findViewById(R.id.message_image_layout);
             messageName = itemView.findViewById(R.id.name_text_layout);
             messageTime = itemView.findViewById(R.id.time_text_layout);
-
+            messageImage = itemView.findViewById(R.id.message_image_sent_layout);
 
         }
     }
@@ -70,6 +73,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         Messages c = mMessageList.get(i);
 
         String from_user = c.getFrom();
+        String message_type = c.getType();
 
         userDatabase.child(from_user).addValueEventListener(new ValueEventListener() {
             @Override
@@ -96,7 +100,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         }
 
 
-        messageViewHolder.messageText.setText(c.getMessage());
+        if(message_type.equals("text")){
+            messageViewHolder.messageText.setText(c.getMessage());
+            messageViewHolder.messageImage.setVisibility(View.INVISIBLE);
+        }else {
+            messageViewHolder.messageText.setVisibility(View.INVISIBLE);
+            Picasso.with(messageViewHolder.messageImage.getContext()).load(c.getMessage()).into(messageViewHolder.messageImage);
+        }
+
     }
 
     @Override
