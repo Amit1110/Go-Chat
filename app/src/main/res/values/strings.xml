@@ -5,7 +5,7 @@
     <string name="enter_email">Enter Email</string>
     <string name="create_account">Create Account</string>
     <string name="enter_password">Enter Password</string>
-    <string name="main_Activity_Action_Bar">Chat View</string>
+    <string name="main_Activity_Action_Bar">Go Chat</string>
     <string name="logut">Logut</string>
     <string name="create_a_new_account">Create a New Account</string>
     <string name="reg_toolbar_title">Create Account</string>
